@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "app.js",
   "repository": "git@github.com:A-ST-RA/concierge-bot.git",
+  "type": "module",
   "author": "Vladislav Bachmackiy <astrax200469@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start:dev": "nodemon ./src/app.js"
+    "start:dev": "nodemon --experimental-specifier-resolution=node ./src/app.js"
   },
   "dependencies": {
-    "telegraph": "^0.8.22"
+    "dotenv": "^16.0.3",
+    "telegraf": "^4.11.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.20"
