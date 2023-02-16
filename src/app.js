@@ -48,20 +48,17 @@ const job = new CronJob('0 0 07 * * 1-5',
 	notifyCronFunc(1),
 	null,
 	true,
-	'America/Los_Angeles'
+	'UTC+3'
 );
 
 const job1 = new CronJob('0 */30 19 * * 1-5',
 	notifyCronFunc(2),
 	null,
 	true,
-	'America/Los_Angeles'
+	'UTC+3'
 );
 
 job.start();
-
 job1.start();
-
-console.log(job1.nextDate())
 
 bot.launch();
