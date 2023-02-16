@@ -1,14 +1,17 @@
 import { Telegraf } from 'telegraf';
 import { Markup } from 'telegraf';
 import AppConfig from './config';
+import { CronJob } from 'cron';
+import difference from 'lodash/difference';
+
+let users = [];
 
 const bot = new Telegraf(AppConfig.botToken);
-bot.hears('test', (ctx) => ctx.reply('test success'));
 bot.start(
 	(ctx) => 
 		ctx.reply(
 			'Keyboard sended',
-			MarkupgreetingData.keyboard(
+			Markup.keyboard(
 				[
 					Markup.button.callback('Check', 'check_it')
 				]
@@ -16,6 +19,49 @@ bot.start(
 		)
 );
 
-bot.hears('Check', (ctx) => {console.log(ctx)})
+bot.hears('Check', ({ message: { from: { username }}}) => {
+	users.push(username);
+})
+
+const notifyCronFunc = (id) => async() => {
+	console.log('notifyCronFunc', id);
+	const chatData = await bot.telegram.getChat(615164329);
+	const activeUsernames = chatData.active_usernames.map(el => el);
+	
+	const differenceOfNotCheckedUser = difference(activeUsernames, users).map(el => `@${el}`);
+	
+	console.log(differenceOfNotCheckedUser);
+	
+	if (differenceOfNotCheckedUser.length !== 0) {
+		bot
+			.telegram
+			.sendMessage(
+				chatData.id,
+				`Внимание!!! Эти пользователи не отметились\n ${differenceOfNotCheckedUser.join('\n')}`
+			);
+	}
+		
+	users = [];
+	}
+
+const job = new CronJob('0 0 07 * * 1-5',
+	notifyCronFunc(1),
+	null,
+	true,
+	'America/Los_Angeles'
+);
+
+const job1 = new CronJob('0 */30 19 * * 1-5',
+	notifyCronFunc(2),
+	null,
+	true,
+	'America/Los_Angeles'
+);
+
+job.start();
+
+job1.start();
+
+console.log(job1.nextDate())
 
 bot.launch();
