@@ -2,7 +2,6 @@ import { Telegraf } from 'telegraf';
 import { Markup } from 'telegraf';
 import AppConfig from './config';
 import { CronJob } from 'cron';
-import difference from 'lodash/difference';
 
 let users = [];
 
@@ -26,32 +25,27 @@ bot.hears('Check', ({ message: { from: { username }}}) => {
 const notifyCronFunc = (id) => async() => {
 	console.log('notifyCronFunc', id);
 	const chatData = await bot.telegram.getChat(AppConfig.chatId);
-	const activeUsernames = chatData.active_usernames.map(el => el);
 	
-	const differenceOfNotCheckedUser = difference(activeUsernames, users).map(el => `@${el}`);
-	
-	console.log(differenceOfNotCheckedUser);
-	
-	if (differenceOfNotCheckedUser.length !== 0) {
+	if (users.length === 0) {
 		bot
 			.telegram
 			.sendMessage(
 				chatData.id,
-				`Внимание!!! Эти пользователи не отметились\n ${differenceOfNotCheckedUser.join('\n')}`
+				AppConfig.notifyMessage,
 			);
 	}
 		
 	users = [];
 	}
 
-const job = new CronJob('0 0 07 * * 1-5',
+const job = new CronJob(AppConfig.timeAtStart,
 	notifyCronFunc(1),
 	null,
 	true,
 	'UTC+3'
 );
 
-const job1 = new CronJob('0 */30 18 * * 1-5',
+const job1 = new CronJob(AppConfig.timeAtEnd,
 	notifyCronFunc(2),
 	null,
 	true,
