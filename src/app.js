@@ -51,7 +51,7 @@ const job = new CronJob('0 0 07 * * 1-5',
 	'UTC+3'
 );
 
-const job1 = new CronJob('0 */30 19 * * 1-5',
+const job1 = new CronJob('0 */30 18 * * 1-5',
 	notifyCronFunc(2),
 	null,
 	true,
