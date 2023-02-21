@@ -24,7 +24,7 @@ bot.hears('Check', ({ message: { from: { username }}}) => {
 
 const notifyCronFunc = (id) => async() => {
 	console.log('notifyCronFunc', id);
-	const chatData = await bot.telegram.getChat(AppConfig.chatId);
+	const chatData = await bot.telegram.getChat(+AppConfig.chatId);
 	
 	if (users.length === 0) {
 		bot
