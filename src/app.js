@@ -18,6 +18,10 @@ bot.start(
 		)
 );
 
+bot.hears('/get-room-id', (ctx) => {
+	ctx.reply('' + ctx.chat.id);
+});
+
 bot.hears('Check', ({ message: { from: { username }}}) => {
 	users.push(username);
 })
